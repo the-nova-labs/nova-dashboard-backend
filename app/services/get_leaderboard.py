@@ -6,16 +6,20 @@ from app.models.models import Submission, Neuron, Competition, Protein
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
 
-    competition_and_protein = (
-        db.query(Competition, Protein.target_protein)
-        .join(Protein, Protein.id == Competition.challenge_id)
+    competition = (
+        db.query(
+            Competition.id, 
+            Competition.epoch_number, 
+            Protein.protein.label("target_protein"), 
+            Protein.protein.label("anti_target_protein"),
+        )
+        .join(Protein, Protein.id == Competition.target_protein_id)
+        .join(Protein, Protein.id == Competition.anti_target_protein_id)
         .filter(Competition.epoch_number == epoch_number)
         .first()
     )
-    if not competition_and_protein:
+    if not competition:
         return None
-
-    competition, protein = competition_and_protein
 
     leaderboard = (
         db.query(
@@ -47,7 +51,8 @@ def get_leaderboard(db: Session, epoch_number: int):
         "competition": {
             "id": competition.id,
             "epoch_number": competition.epoch_number,
-            "protein": protein
+            "target_protein": competition.target_protein,
+            "anti_target_protein": competition.anti_target_protein
         }
     }
 
