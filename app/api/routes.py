@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.services.submission_service import (
+from app.services import (
     submit_results, 
     get_leaderboard, 
     get_competition_list,
