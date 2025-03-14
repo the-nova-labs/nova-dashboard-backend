@@ -14,7 +14,7 @@ def get_leaderboard(db: Session, epoch_number: int):
     )
     print(competition, protein)
     if not competition:
-        return []
+        return None
 
     leaderboard = (
         db.query(
