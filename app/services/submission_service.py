@@ -1,6 +1,9 @@
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
+from sqlalchemy.sql import func
 from app.schemas.submission_schema import MinerSubmissionsRequest
 from app.models.crud import get_or_create_competition, get_or_create_neuron, create_submission
+from app.models.models import Submission, Neuron, Competition, Challenge        
 
 
 def submit_results(data: MinerSubmissionsRequest, db: Session):
@@ -12,6 +15,7 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
         create_submission(db, competition.id, neuron.id, submission.block_number, submission.score)
 
     db.commit() 
-    return {
-        "success": True,
-    }
+    return {"message": "Submissions successfully recorded"}
+
+
+
