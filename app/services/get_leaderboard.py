@@ -1,20 +1,22 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 from sqlalchemy.sql import func
 from app.models.models import Submission, Neuron, Competition, Protein        
 
 
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
+    target_protein_alias = aliased(Protein)
+    anti_target_protein_alias = aliased(Protein)
 
     competition = (
         db.query(
             Competition.id, 
             Competition.epoch_number, 
-            Protein.protein.label("target_protein"), 
-            Protein.protein.label("anti_target_protein"),
+            target_protein_alias.protein.label("target_protein"), 
+            anti_target_protein_alias.protein.label("anti_target_protein"),
         )
-        .join(Protein, Protein.id == Competition.target_protein_id)
-        .join(Protein, Protein.id == Competition.anti_target_protein_id)
+        .join(target_protein_alias, target_protein_alias.id == Competition.target_protein_id)
+        .join(anti_target_protein_alias, anti_target_protein_alias.id == Competition.anti_target_protein_id)
         .filter(Competition.epoch_number == epoch_number)
         .first()
     )
@@ -25,6 +27,7 @@ def get_leaderboard(db: Session, epoch_number: int):
         db.query(
             Submission.neuron_id,
             Submission.block_number,
+            Submission.molecule,
             func.max(Submission.score).label("max_score"),
             Neuron.hotkey
         )
@@ -44,6 +47,7 @@ def get_leaderboard(db: Session, epoch_number: int):
             {
                 "hotkey": row.hotkey,
                 "block_number": row.block_number,
+                "molecule": row.molecule,
                 "max_score": row.max_score
             }
             for row in leaderboard

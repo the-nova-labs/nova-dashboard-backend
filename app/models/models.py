@@ -29,8 +29,8 @@ class Competition(Base):
     anti_target_protein_id: Mapped[int] = mapped_column(Integer, ForeignKey("proteins.id"), nullable=False)
     epoch_number: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    target_protein: Mapped["Protein"] = relationship()
-    anti_target_protein: Mapped["Protein"] = relationship()
+    target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[target_protein_id])
+    anti_target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[anti_target_protein_id])
     submissions: Mapped[List["Submission"]] = relationship(back_populates="competition")
 
 
