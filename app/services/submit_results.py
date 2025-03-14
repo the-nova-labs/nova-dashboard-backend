@@ -6,7 +6,12 @@ from app.models.crud import get_or_create_competition, get_or_create_neuron, cre
 def submit_results(data: MinerSubmissionsRequest, db: Session):
     """Handles miner submissions, ensuring competitions and neurons exist."""
 
-    competition = get_or_create_competition(db, data.competition.epoch_number, data.competition.target_protein)
+    competition = get_or_create_competition(
+        db, 
+        data.competition.epoch_number, 
+        data.competition.target_protein, 
+        data.competition.anti_target_protein
+    )
     for submission in data.submissions:
         neuron = get_or_create_neuron(db, submission.neuron.hotkey)
         create_submission(db, competition.id, neuron.id, submission.block_number, submission.score)

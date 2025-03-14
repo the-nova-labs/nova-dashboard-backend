@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.models.models import (
     Competition, 
     Neuron, 
-    Challenge, 
+    Protein, 
     Submission,
 )
 
@@ -21,11 +21,11 @@ def create_record(session: Session, model_class, **kwargs):
         return None
 
 
-def get_or_create_challenge(db: Session, protein: str) -> Challenge:
+def get_or_create_challenge(db: Session, protein: str) -> Protein:
     """Fetch an existing challenge or create a new one if not found."""
-    challenge = db.query(Challenge).filter_by(protein=protein).first()
+    challenge = db.query(Protein).filter_by(protein=protein).first()
     if not challenge:
-        challenge = create_record(db, Challenge, protein=protein)
+        challenge = create_record(db, Protein, protein=protein)
     return challenge
 
 

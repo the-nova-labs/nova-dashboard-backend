@@ -1,14 +1,14 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
-from app.models.models import Submission, Neuron, Competition, Challenge        
+from app.models.models import Submission, Neuron, Competition, Protein        
 
 
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
 
     competition_and_protein = (
-        db.query(Competition, Challenge.target_protein)
-        .join(Challenge, Challenge.id == Competition.challenge_id)
+        db.query(Competition, Protein.target_protein)
+        .join(Protein, Protein.id == Competition.challenge_id)
         .filter(Competition.epoch_number == epoch_number)
         .first()
     )

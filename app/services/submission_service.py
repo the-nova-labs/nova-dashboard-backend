@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from app.schemas.submission_schema import MinerSubmissionsRequest
 from app.models.crud import get_or_create_competition, get_or_create_neuron, create_submission
-from app.models.models import Submission, Neuron, Competition, Challenge        
+from app.models.models import Submission, Neuron, Competition, Protein        
 
 
 def submit_results(data: MinerSubmissionsRequest, db: Session):
