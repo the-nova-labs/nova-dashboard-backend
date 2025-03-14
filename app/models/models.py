@@ -18,8 +18,8 @@ class Challenge(Base):
     __tablename__ = "challenges"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    target_protein: Mapped[str] = mapped_column(String, nullable=False, index=True)
-    anti_target_protein: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    target_protein: Mapped[str] = mapped_column(String, index=True)
+    anti_target_protein: Mapped[str] = mapped_column(String, index=True)
     
 class Competition(Base):
     __tablename__ = "competitions"
@@ -39,7 +39,7 @@ class Submission(Base):
     block_number: Mapped[int] = mapped_column(Integer, nullable=False)
     competition_id: Mapped[int] = mapped_column(Integer, ForeignKey("competitions.id"), nullable=False)
     neuron_id: Mapped[int] = mapped_column(Integer, ForeignKey("neurons.id"), nullable=False)
-    molecule: Mapped[str] = mapped_column(String, nullable=True)
+    molecule: Mapped[str] = mapped_column(String)
     score: Mapped[float] = mapped_column(Float, default=0.0)
 
     neuron: Mapped["Neuron"] = relationship()
