@@ -12,7 +12,6 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
         create_submission(db, competition.id, neuron.id, submission.block_number, submission.score)
 
     db.commit() 
-    return {"message": "Submissions successfully recorded"}
-
-
-
+    return {
+        "success": True,
+    }
