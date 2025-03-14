@@ -1,3 +1,4 @@
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from app.schemas.submission_schema import MinerSubmissionsRequest
