@@ -10,11 +10,19 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
         db, 
         data.competition.epoch_number, 
         data.competition.target_protein, 
-        data.competition.anti_target_protein
+        data.competition.anti_target_protein,
     )
+    
     for submission in data.submissions:
         neuron = get_or_create_neuron(db, submission.neuron.hotkey)
-        create_submission(db, competition.id, neuron.id, submission.block_number, submission.score)
+        create_submission(
+            db, 
+            competition.id, 
+            neuron.id, 
+            submission.block_number, 
+            submission.score, 
+            submission.molecule,
+        )
 
     db.commit() 
     return {
