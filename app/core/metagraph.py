@@ -29,8 +29,9 @@ class Metagraph:
                 return -1
 
     def sync(self):
-        if self.block - self.last_update > NEURON_EPOCH_LENGTH:
+        current_block = self.block
+        if current_block - self.last_update > NEURON_EPOCH_LENGTH:
             self.metagraph.sync(subtensor=self.subtensor)
-            self.last_update = self.block
+            self.last_update = current_block
         
 METAGRAPH = Metagraph()
