@@ -22,8 +22,11 @@ class Metagraph:
 
     def get_uid(self, hotkey: str) -> int:
         self.sync()
-        uid = self.metagraph.hotkeys.index(hotkey)
-        return uid if uid is not None else -1
+        try:
+            uid = self.metagraph.hotkeys.index(hotkey)
+            return uid
+        except ValueError:
+            return -1
 
     def sync(self):
         if self.block - self.last_update > NEURON_EPOCH_LENGTH:
