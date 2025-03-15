@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy.sql import func, desc, select
+from app.core.metagraph import METAGRAPH
 from app.models.models import Submission, Neuron, Competition, Protein        
-
 
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
@@ -73,6 +73,7 @@ def get_leaderboard(db: Session, epoch_number: int):
                 "block_number": row.block_number,
                 "molecule": row.molecule,
                 "max_score": row.score,
+                "uid": METAGRAPH.get_uid(row.hotkey)
             }
             for row in leaderboard
         ],
