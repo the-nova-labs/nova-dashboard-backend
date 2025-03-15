@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.models.models import (
     Competition, 
     Neuron, 
-    Challenge, 
+    Protein, 
     Submission,
 )
 
@@ -21,22 +21,28 @@ def create_record(session: Session, model_class, **kwargs):
         return None
 
 
-def get_or_create_challenge(db: Session, protein: str) -> Challenge:
+def get_or_create_protein(db: Session, protein: str) -> Protein:
     """Fetch an existing challenge or create a new one if not found."""
-    challenge = db.query(Challenge).filter_by(protein=protein).first()
+    challenge = db.query(Protein).filter_by(protein=protein).first()
     if not challenge:
-        challenge = create_record(db, Challenge, protein=protein)
+        challenge = create_record(db, Protein, protein=protein)
     return challenge
 
 
-def get_or_create_competition(db: Session, epoch_number: int, protein: str) -> Competition:
+def get_or_create_competition(db: Session, epoch_number: int, target_protein: str, anti_target_protein: str) -> Competition:
     """Fetch an existing competition or create a new one if not found."""
     competition = db.query(Competition).filter_by(epoch_number=epoch_number).first()
     
     if not competition:
-        challenge = get_or_create_challenge(db, protein)
-        competition = create_record(db, Competition, epoch_number=epoch_number, challenge_id=challenge.id)
-
+        target_protein = get_or_create_protein(db, target_protein)
+        anti_target_protein = get_or_create_protein(db, anti_target_protein)
+        competition = create_record(
+            db, 
+            Competition, 
+            epoch_number=epoch_number, 
+            target_protein_id=target_protein.id, 
+            anti_target_protein_id=anti_target_protein.id,
+        )
     return competition
 
 
@@ -54,7 +60,7 @@ def get_or_create_neuron(db: Session, hotkey: str) -> Neuron:
     return neuron
 
 
-def create_submission(db: Session, competition_id: int, neuron_id: int, block_number: int, score: float) -> Submission:
+def create_submission(db: Session, competition_id: int, neuron_id: int, block_number: int, score: float, molecule: str) -> Submission:
     """Create a new submission record."""
     submission = create_record(
         db, 
@@ -63,5 +69,6 @@ def create_submission(db: Session, competition_id: int, neuron_id: int, block_nu
         neuron_id=neuron_id, 
         block_number=block_number, 
         score=score,
+        molecule=molecule,
     )
     return submission

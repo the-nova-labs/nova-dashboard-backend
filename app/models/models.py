@@ -14,21 +14,23 @@ class Neuron(Base):
     hotkey: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
 
 
-class Challenge(Base):
-    __tablename__ = "challenges"
+class Protein(Base):
+    __tablename__ = "proteins"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    protein: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    protein: Mapped[str] = mapped_column(String, index=True)
 
     
 class Competition(Base):
     __tablename__ = "competitions"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    challenge_id: Mapped[int] = mapped_column(Integer, ForeignKey("challenges.id"), nullable=False)
+    target_protein_id: Mapped[int] = mapped_column(Integer, ForeignKey("proteins.id"), nullable=False)
+    anti_target_protein_id: Mapped[int] = mapped_column(Integer, ForeignKey("proteins.id"), nullable=False)
     epoch_number: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    challenge: Mapped["Challenge"] = relationship()
+    target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[target_protein_id])
+    anti_target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[anti_target_protein_id])
     submissions: Mapped[List["Submission"]] = relationship(back_populates="competition")
 
 
@@ -39,6 +41,7 @@ class Submission(Base):
     block_number: Mapped[int] = mapped_column(Integer, nullable=False)
     competition_id: Mapped[int] = mapped_column(Integer, ForeignKey("competitions.id"), nullable=False)
     neuron_id: Mapped[int] = mapped_column(Integer, ForeignKey("neurons.id"), nullable=False)
+    molecule: Mapped[str] = mapped_column(String)
     score: Mapped[float] = mapped_column(Float, default=0.0)
 
     neuron: Mapped["Neuron"] = relationship()
