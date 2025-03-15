@@ -21,8 +21,8 @@ class Metagraph:
 
     def get_uid(self, hotkey: str) -> int:
         with self.lock:
-            self.sync()
             try:
+                self.sync()
                 uid = self.metagraph.hotkeys.index(hotkey)
                 return uid
             except ValueError:
