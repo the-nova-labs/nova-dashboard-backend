@@ -17,13 +17,13 @@ def test_submit_results():
     # Sample submission data
     test_data = {
         "competition": {
-            "target_protein": "test_protein", 
-            "anti_target_protein": "test_protein",
-            "epoch_number": 20,
+            "target_protein": "test_protdsdsein", 
+            "anti_target_protein": "test_pdfsdrotein",
+            "epoch_number": 23,
         },
         "submissions": [
             {"neuron": {"hotkey": "neuron_1"}, "block_number": 100, "score": 95.5, "molecule": "test_molecule2"},
-            {"neuron": {"hotkey": "neuron_2"}, "block_number": 101, "score": 90.0, "molecule": "test_molecule2"},
+            {"neuron": {"hotkey": "neuron_2"}, "block_number": 101, "score": 190.0, "molecule": "test_mdolecule2"},
             {"neuron": {"hotkey": "neuron_3"}, "block_number": 102, "score": 85.0, "molecule": "test_molecule3"}
         ]
     }
