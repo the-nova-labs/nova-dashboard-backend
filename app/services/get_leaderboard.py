@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, aliased
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, desc, select
 from app.models.models import Submission, Neuron, Competition, Protein        
 
 
@@ -23,24 +23,48 @@ def get_leaderboard(db: Session, epoch_number: int):
     if not competition:
         return None
 
-    leaderboard = (
-        db.query(
-            Submission.neuron_id,
+    # Window function for ranking
+    rank_criteria = func.row_number().over(
+        partition_by=Submission.neuron_id,
+        order_by=[
+            desc(Submission.score),
             Submission.block_number,
-            Submission.molecule,
-            func.max(Submission.score).label("max_score"),
-            Neuron.hotkey
-        )
-        .join(Neuron, Submission.neuron_id == Neuron.id)
-        .filter(Submission.competition_id == competition.id)
-        .group_by(
-            Submission.neuron_id
-        ).order_by(
-            Submission.score.desc(),
-            Submission.block_number.asc(),
-            Submission.id.asc()
-        ).all()
+            Submission.id
+        ]
     )
+
+    # Subquery
+    subq = (
+        select(
+            Submission,
+            rank_criteria.label('rn')
+        )
+        .where(Submission.competition_id == competition.id)
+        .subquery()
+    )
+
+    bs = aliased(Submission, subq)
+
+    # Main query
+    stmt = (
+        select(
+            bs.neuron_id,
+            Neuron.hotkey,
+            bs.molecule,
+            bs.score,
+            bs.block_number,
+            bs.id,
+        )
+        .join(Neuron, bs.neuron_id == Neuron.id)
+        .where(subq.c.rn == 1)
+        .order_by(
+            desc(bs.score),
+            bs.block_number,
+            bs.id
+        )
+    )
+
+    leaderboard = db.execute(stmt).all()
 
     return {
         "leaderboard": [
@@ -48,7 +72,7 @@ def get_leaderboard(db: Session, epoch_number: int):
                 "hotkey": row.hotkey,
                 "block_number": row.block_number,
                 "molecule": row.molecule,
-                "max_score": row.max_score
+                "max_score": row.score,
             }
             for row in leaderboard
         ],
