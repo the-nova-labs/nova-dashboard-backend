@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
+from app.core.constants import API_TOKEN
 from app.core.database import get_db
 from app.services import (
     submit_results, 
@@ -13,7 +14,21 @@ router = APIRouter()
 
 
 @router.post("/submit_results")
-def handle_submit_results(data: MinerSubmissionsRequest, db: Session = Depends(get_db)):
+def handle_submit_results(
+    data: MinerSubmissionsRequest, 
+    db: Session = Depends(get_db),
+    authorization: str = Header(None)
+):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+        
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization format")
+        
+    api_token = authorization.split(" ")[1]
+    if api_token != API_TOKEN:
+        raise HTTPException(status_code=401, detail="Invalid API token")
+    
     return submit_results(data, db)
 
 

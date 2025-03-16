@@ -3,6 +3,7 @@ from sqlalchemy.sql import func, desc, select
 from app.core.metagraph import METAGRAPH
 from app.models.models import Submission, Neuron, Competition, Protein        
 
+
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
     target_protein_alias = aliased(Protein)

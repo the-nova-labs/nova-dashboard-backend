@@ -8,6 +8,7 @@ from app.core.constants import (
 )
 from app.utils.misc import ttl_get_block
 
+
 class Metagraph:
     @property
     def block(self) -> int:
