@@ -1,7 +1,5 @@
 import bittensor as bt
-import datetime
 import threading
-import time
 from app.core.constants import (
     SUBNET_UID,
     NETWORK,
@@ -19,18 +17,21 @@ class Metagraph:
         self.subtensor = bt.subtensor(network=NETWORK)
         self.metagraph = self.subtensor.metagraph(netuid=SUBNET_UID)
         self.last_update = self.block
+        self.lock = threading.Lock()
 
     def get_uid(self, hotkey: str) -> int:
-        self.sync()
-        try:
-            uid = self.metagraph.hotkeys.index(hotkey)
-            return uid
-        except ValueError:
-            return -1
+        with self.lock:
+            try:
+                self.sync()
+                uid = self.metagraph.hotkeys.index(hotkey)
+                return uid
+            except ValueError:
+                return -1
 
     def sync(self):
-        if self.block - self.last_update > NEURON_EPOCH_LENGTH:
+        current_block = self.block
+        if current_block - self.last_update > NEURON_EPOCH_LENGTH:
             self.metagraph.sync(subtensor=self.subtensor)
-            self.last_update = self.block
+            self.last_update = current_block
         
 METAGRAPH = Metagraph()
