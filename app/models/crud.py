@@ -35,7 +35,6 @@ def get_or_create_competition(
     epoch_number: int, 
     target_protein: str, 
     anti_target_protein: str,
-    competition_metadata: dict,
 ) -> Competition:
     """Fetch an existing competition or create a new one if not found."""
     competition = db.query(Competition).filter_by(epoch_number=epoch_number).first()
@@ -50,27 +49,23 @@ def get_or_create_competition(
             target_protein_id=target_protein.id, 
             anti_target_protein_id=anti_target_protein.id,
         )
-        create_competition_metadata(
-            db, 
-            competition.id, 
-            competition_metadata,
-        )
     return competition
 
 
-
-def create_competition_metadata(
+def create_competition_metadata_if_not_exists(
     db: Session, 
     competition_id: int, 
     competition_metadata: dict
 ) -> CompetitionMetadata:
     """Create a new competition metadata record."""
-    metadata = create_record(
-        db, 
-        CompetitionMetadata, 
-        competition_id=competition_id, 
-        **competition_metadata,
-    )
+    metadata = db.query(CompetitionMetadata).filter_by(competition_id=competition_id).first()
+    if not metadata:
+        metadata = create_record(
+            db, 
+            CompetitionMetadata, 
+            competition_id=competition_id, 
+            **competition_metadata,
+        )
     return metadata
 
 
