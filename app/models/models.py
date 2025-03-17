@@ -34,6 +34,19 @@ class Competition(Base):
     submissions: Mapped[List["Submission"]] = relationship(back_populates="competition")
 
 
+class CompetitionMetadata(Base):
+    __tablename__ = "competition_metadata"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    competition_id: Mapped[int] = mapped_column(Integer, ForeignKey("competitions.id"), nullable=False)
+    unique_hotkeys: Mapped[int] = mapped_column(Integer, nullable=True)
+    best_hotkey: Mapped[str] = mapped_column(String, nullable=True)
+    best_molecule: Mapped[str] = mapped_column(String, nullable=True)
+    best_score: Mapped[float] = mapped_column(Float, nullable=True)
+
+    competition: Mapped["Competition"] = relationship()
+
+
 class Submission(Base):
     __tablename__ = "submissions"
 
