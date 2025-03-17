@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session, aliased
-from app.models.models import Competition, Protein        
+from app.models.models import Competition, Protein, CompetitionMetadata        
 
 
 def get_competition_list(db: Session):
@@ -15,6 +15,7 @@ def get_competition_list(db: Session):
             target_protein_alias.protein.label("target_protein"),
             anti_target_protein_alias.protein.label("anti_target_protein")
         )
+        
         .join(target_protein_alias, target_protein_alias.id == Competition.target_protein_id)  # Join target protein
         .join(anti_target_protein_alias, anti_target_protein_alias.id == Competition.anti_target_protein_id)  # Join anti-target protein
         .order_by(Competition.epoch_number.desc())  # Sort by latest epoch first

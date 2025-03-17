@@ -42,8 +42,7 @@ class CompetitionMetadata(Base):
     unique_hotkeys: Mapped[int] = mapped_column(Integer, nullable=True)
     best_hotkey: Mapped[str] = mapped_column(String, nullable=True)
     best_molecule: Mapped[str] = mapped_column(String, nullable=True)
-    best_score: Mapped[float] = mapped_column(Float, nullable=True)
-
+    
     competition: Mapped["Competition"] = relationship()
 
 

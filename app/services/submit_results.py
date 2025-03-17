@@ -15,7 +15,6 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
         data.competition.target_protein, 
         data.competition.anti_target_protein,
     )
-
     submissions = data.submissions
     unique_hotkeys = len({submission.neuron.hotkey for submission in submissions})
     best_submission = min(
@@ -26,14 +25,13 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
         "unique_hotkeys": unique_hotkeys,
         "best_hotkey": best_submission.neuron.hotkey,
         "best_molecule": best_submission.molecule,
-        "best_score": best_submission.score,
     }
     create_competition_metadata_if_not_exists(
         db, 
         competition.id, 
         competition_metadata,
     )
-    
+
     for submission in data.submissions:
         neuron = get_or_create_neuron(db, submission.neuron.hotkey)
         create_submission(
