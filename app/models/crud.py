@@ -5,7 +5,6 @@ from app.models.models import (
     Neuron, 
     Protein, 
     Submission,
-    CompetitionMetadata,
 )
 
 
@@ -50,23 +49,6 @@ def get_or_create_competition(
             anti_target_protein_id=anti_target_protein.id,
         )
     return competition
-
-
-def create_competition_metadata_if_not_exists(
-    db: Session, 
-    competition_id: int, 
-    competition_metadata: dict
-) -> CompetitionMetadata:
-    """Create a new competition metadata record."""
-    metadata = db.query(CompetitionMetadata).filter_by(competition_id=competition_id).first()
-    if not metadata:
-        metadata = create_record(
-            db, 
-            CompetitionMetadata, 
-            competition_id=competition_id, 
-            **competition_metadata,
-        )
-    return metadata
 
 
 def get_or_create_neuron(db: Session, hotkey: str) -> Neuron:
