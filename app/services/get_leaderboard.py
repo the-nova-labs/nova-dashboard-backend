@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session, aliased
+from sqlalchemy.orm import Session, aliased, joinedload
 from sqlalchemy.sql import func, desc, select
 from app.core.metagraph import METAGRAPH
 from app.models.models import Submission, Neuron, Competition, Protein        
@@ -6,18 +6,12 @@ from app.models.models import Submission, Neuron, Competition, Protein
 
 def get_leaderboard(db: Session, epoch_number: int):
     """Fetch miners sorted by max score, then block number, then submission ID, ensuring unique neurons."""
-    target_protein_alias = aliased(Protein)
-    anti_target_protein_alias = aliased(Protein)
-
     competition = (
-        db.query(
-            Competition.id, 
-            Competition.epoch_number, 
-            target_protein_alias.protein.label("target_protein"), 
-            anti_target_protein_alias.protein.label("anti_target_protein"),
+        db.query(Competition)
+        .options(
+            joinedload(Competition.target_protein),
+            joinedload(Competition.anti_target_protein),
         )
-        .join(target_protein_alias, target_protein_alias.id == Competition.target_protein_id)
-        .join(anti_target_protein_alias, anti_target_protein_alias.id == Competition.anti_target_protein_id)
         .filter(Competition.epoch_number == epoch_number)
         .first()
     )
@@ -74,15 +68,15 @@ def get_leaderboard(db: Session, epoch_number: int):
                 "block_number": row.block_number,
                 "molecule": row.molecule,
                 "max_score": row.score,
-                "uid": METAGRAPH.get_uid(row.hotkey)
+                "uid": METAGRAPH.get_uid(row.hotkey),
             }
             for row in leaderboard
         ],
         "competition": {
             "id": competition.id,
             "epoch_number": competition.epoch_number,
-            "target_protein": competition.target_protein,
-            "anti_target_protein": competition.anti_target_protein
+            "target_protein": competition.target_protein.protein,
+            "anti_target_protein": competition.anti_target_protein.protein,
         }
     }
 

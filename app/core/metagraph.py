@@ -20,6 +20,10 @@ class Metagraph:
         self.last_update = self.block
         self.lock = threading.Lock()
 
+    def get_block(self) -> int:
+        with self.lock:
+            return self.block
+        
     def get_uid(self, hotkey: str) -> int:
         with self.lock:
             try:

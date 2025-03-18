@@ -1,11 +1,14 @@
 from sqlalchemy.orm import Session
 from app.schemas.submission_schema import MinerSubmissionsRequest
-from app.models.crud import get_or_create_competition, get_or_create_neuron, create_submission
+from app.models.crud import (
+    get_or_create_competition, 
+    get_or_create_neuron, 
+    create_submission, 
+)
 
 
 def submit_results(data: MinerSubmissionsRequest, db: Session):
     """Handles miner submissions, ensuring competitions and neurons exist."""
-
     competition = get_or_create_competition(
         db, 
         data.competition.epoch_number, 

@@ -32,7 +32,14 @@ class Competition(Base):
     target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[target_protein_id])
     anti_target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[anti_target_protein_id])
     submissions: Mapped[List["Submission"]] = relationship(back_populates="competition")
-
+    best_submission: Mapped["Submission"] = relationship(
+        "Submission",
+        primaryjoin="and_(Competition.id==Submission.competition_id)",
+        order_by="desc(Submission.score), asc(Submission.block_number), asc(Submission.id)",
+        uselist=False,
+        viewonly=True
+    )
+    
 
 class Submission(Base):
     __tablename__ = "submissions"

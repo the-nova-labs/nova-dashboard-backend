@@ -29,7 +29,12 @@ def get_or_create_protein(db: Session, protein: str) -> Protein:
     return challenge
 
 
-def get_or_create_competition(db: Session, epoch_number: int, target_protein: str, anti_target_protein: str) -> Competition:
+def get_or_create_competition(
+    db: Session, 
+    epoch_number: int, 
+    target_protein: str, 
+    anti_target_protein: str,
+) -> Competition:
     """Fetch an existing competition or create a new one if not found."""
     competition = db.query(Competition).filter_by(epoch_number=epoch_number).first()
     
@@ -72,3 +77,5 @@ def create_submission(db: Session, competition_id: int, neuron_id: int, block_nu
         molecule=molecule,
     )
     return submission
+
+
