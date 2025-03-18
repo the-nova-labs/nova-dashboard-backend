@@ -23,14 +23,17 @@ def get_competition_list(db: Session):
         .all()
     )
 
-    return [
-        {
-            "id": competition.id, 
-            "epoch_number": competition.epoch_number, 
-            "target_protein": competition.target_protein,
-            "anti_target_protein": competition.anti_target_protein,
-            "best_hotkey": competition.best_hotkey,
-            "best_uid": METAGRAPH.get_uid(competition.best_hotkey) if competition.best_hotkey else None
-        } 
-        for competition in competitions
-    ]
+    return {
+        "block": METAGRAPH.get_block(),
+        "competitions": [
+            {
+                "id": competition.id, 
+                "epoch_number": competition.epoch_number, 
+                "target_protein": competition.target_protein,
+                "anti_target_protein": competition.anti_target_protein,
+                "best_hotkey": competition.best_hotkey,
+                "best_uid": METAGRAPH.get_uid(competition.best_hotkey) if competition.best_hotkey else None
+            } 
+            for competition in competitions
+        ]
+    }
