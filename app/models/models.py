@@ -48,7 +48,7 @@ class Submission(Base):
     block_number: Mapped[int] = mapped_column(Integer, nullable=False)
     competition_id: Mapped[int] = mapped_column(Integer, ForeignKey("competitions.id"), nullable=False)
     neuron_id: Mapped[int] = mapped_column(Integer, ForeignKey("neurons.id"), nullable=False)
-    molecule: Mapped[str] = mapped_column(String)
+    molecule: Mapped[str] = mapped_column(String, default="")
     score: Mapped[float] = mapped_column(Float, default=0.0)
 
     neuron: Mapped["Neuron"] = relationship()

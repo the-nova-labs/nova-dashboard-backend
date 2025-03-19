@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, Field
+from typing import List, Optional
 
 
 class NeuronBase(BaseModel):
@@ -16,7 +16,7 @@ class SubmissionBase(BaseModel):
     neuron: NeuronBase
     block_number: int
     score: float
-    molecule: str
+    molecule: Optional[str] = None
 
 
 class MinerSubmissionsRequest(BaseModel):

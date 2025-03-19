@@ -9,6 +9,7 @@ from app.models.crud import (
 
 def submit_results(data: MinerSubmissionsRequest, db: Session):
     """Handles miner submissions, ensuring competitions and neurons exist."""
+    
     competition = get_or_create_competition(
         db, 
         data.competition.epoch_number, 
