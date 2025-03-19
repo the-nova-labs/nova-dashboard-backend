@@ -5,9 +5,6 @@ from app.core.metagraph import METAGRAPH
 
 def get_competition_list(db: Session):
     """Fetch all competitions along with their target and anti-target proteins."""
-    
-    target_protein_alias = aliased(Protein)
-    anti_target_protein_alias = aliased(Protein)
 
     competitions = (
         db.query(Competition)
