@@ -6,6 +6,7 @@ from app.services import (
     submit_results, 
     get_leaderboard, 
     get_competition_list,
+    get_smiles,
 )
 from app.schemas.submission_schema import MinerSubmissionsRequest
 
@@ -43,3 +44,8 @@ def leaderboard(epoch_number: int, db: Session = Depends(get_db)):
 @router.get("/competitions")
 def get_competitions(db: Session = Depends(get_db)):
     return get_competition_list(db)
+
+
+@router.get("/molecule")
+def get_molecule(smiles: str):
+    return get_smiles(smiles)
