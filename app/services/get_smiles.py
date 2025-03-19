@@ -1,10 +1,6 @@
-import io
-import base64
 import requests
 
 from fastapi import HTTPException
-from rdkit import Chem
-from rdkit.Chem import Draw
 from app.core.constants import VALIDATOR_API_KEY
 
 
