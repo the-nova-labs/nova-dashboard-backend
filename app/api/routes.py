@@ -47,5 +47,5 @@ def get_competitions(db: Session = Depends(get_db)):
 
 
 @router.get("/molecule")
-def get_molecule(smiles: str):
-    return get_smiles(smiles)
+def get_molecule(molecule: str):
+    return get_smiles(molecule)
