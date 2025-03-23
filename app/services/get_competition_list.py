@@ -9,8 +9,8 @@ def get_competition_list(db: Session):
     competitions = (
         db.query(Competition)
         .options(selectinload(Competition.best_submission).selectinload(Submission.neuron))
-        .options(joinedload(Competition.target_protein))
-        .options(joinedload(Competition.anti_target_protein))
+        .options(joinedload(Competition.target_proteins))  # Load multiple target proteins
+        .options(joinedload(Competition.anti_target_proteins))  # Load multiple anti-target proteins
         .order_by(Competition.epoch_number.desc())
         .all()
     )
@@ -18,8 +18,8 @@ def get_competition_list(db: Session):
         {
             "id": competition.id, 
             "epoch_number": competition.epoch_number, 
-            "target_protein": competition.target_protein.protein,
-            "anti_target_protein": competition.anti_target_protein.protein,
+            "target_proteins": [protein.protein for protein in competition.target_proteins],  
+            "anti_target_proteins": [protein.protein for protein in competition.anti_target_proteins],  
             "best_submission":  {
                 "hotkey": competition.best_submission.neuron.hotkey,
                 "uid": METAGRAPH.get_uid(competition.best_submission.neuron.hotkey) if competition.best_submission.neuron.hotkey else None,

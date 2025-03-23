@@ -9,8 +9,8 @@ def get_leaderboard(db: Session, epoch_number: int):
     competition = (
         db.query(Competition)
         .options(
-            joinedload(Competition.target_protein),
-            joinedload(Competition.anti_target_protein),
+            joinedload(Competition.target_proteins),
+            joinedload(Competition.anti_target_proteins),
         )
         .filter(Competition.epoch_number == epoch_number)
         .first()
@@ -75,8 +75,8 @@ def get_leaderboard(db: Session, epoch_number: int):
         "competition": {
             "id": competition.id,
             "epoch_number": competition.epoch_number,
-            "target_protein": competition.target_protein.protein,
-            "anti_target_protein": competition.anti_target_protein.protein,
+            "target_proteins": [protein.protein for protein in competition.target_proteins],
+            "anti_target_proteins": [protein.protein for protein in competition.anti_target_proteins],
         }
     }
 

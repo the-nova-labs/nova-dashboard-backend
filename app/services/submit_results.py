@@ -4,6 +4,7 @@ from app.models.crud import (
     get_or_create_competition, 
     get_or_create_neuron, 
     create_submission, 
+    get_or_create_protein,
 )
 
 
@@ -13,8 +14,8 @@ def submit_results(data: MinerSubmissionsRequest, db: Session):
     competition = get_or_create_competition(
         db, 
         data.competition.epoch_number, 
-        data.competition.target_protein, 
-        data.competition.anti_target_protein,
+        data.competition.target_proteins,    
+        data.competition.anti_target_proteins,
     )
     
     for submission in data.submissions:

@@ -7,8 +7,8 @@ class NeuronBase(BaseModel):
 
 
 class CompetitionBase(BaseModel):
-    target_protein: str
-    anti_target_protein: str
+    target_proteins: List[str]
+    anti_target_proteins: List[str]
     epoch_number: int
 
 

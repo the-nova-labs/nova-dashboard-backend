@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from typing import List
 from app.models.models import (
     Competition, 
     Neuron, 
@@ -22,9 +23,9 @@ def create_record(session: Session, model_class, **kwargs):
 
 
 def get_or_create_protein(db: Session, protein: str) -> Protein:
-    """Fetch an existing challenge or create a new one if not found."""
-    challenge = db.query(Protein).filter_by(protein=protein).first()
-    if not challenge:
+    """Fetch an existing protein or create a new one if not found."""
+    protein = db.query(Protein).filter_by(protein=protein).first()
+    if not protein:
         challenge = create_record(db, Protein, protein=protein)
     return challenge
 
@@ -32,21 +33,21 @@ def get_or_create_protein(db: Session, protein: str) -> Protein:
 def get_or_create_competition(
     db: Session, 
     epoch_number: int, 
-    target_protein: str, 
-    anti_target_protein: str,
+    target_proteins: List[str], 
+    anti_target_proteins: List[str],
 ) -> Competition:
     """Fetch an existing competition or create a new one if not found."""
     competition = db.query(Competition).filter_by(epoch_number=epoch_number).first()
     
     if not competition:
-        target_protein = get_or_create_protein(db, target_protein)
-        anti_target_protein = get_or_create_protein(db, anti_target_protein)
+        target_proteins = [get_or_create_protein(db, p) for p in target_proteins]
+        anti_target_proteins = [get_or_create_protein(db, p) for p in anti_target_proteins]
         competition = create_record(
             db, 
             Competition, 
             epoch_number=epoch_number, 
-            target_protein_id=target_protein.id, 
-            anti_target_protein_id=anti_target_protein.id,
+            target_proteins=target_proteins, 
+            anti_target_proteins=anti_target_proteins,
         )
     return competition
 

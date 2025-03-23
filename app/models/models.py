@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, String, Float, ForeignKey
+from sqlalchemy import Integer, String, Float, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship, DeclarativeBase
 from typing import List
 
@@ -20,17 +20,39 @@ class Protein(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     protein: Mapped[str] = mapped_column(String, index=True)
 
+
+# Association tables for many-to-many relationships
+competition_target_association = Table(
+    "competition_target_association",
+    Base.metadata,
+    Column("competition_id", Integer, ForeignKey("competitions.id"), primary_key=True),
+    Column("protein_id", Integer, ForeignKey("proteins.id"), primary_key=True),
+)
+
+
+competition_anti_target_association = Table(
+    "competition_anti_target_association",
+    Base.metadata,
+    Column("competition_id", Integer, ForeignKey("competitions.id"), primary_key=True),
+    Column("protein_id", Integer, ForeignKey("proteins.id"), primary_key=True),
+)
+
     
 class Competition(Base):
     __tablename__ = "competitions"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    target_protein_id: Mapped[int] = mapped_column(Integer, ForeignKey("proteins.id"), nullable=False)
-    anti_target_protein_id: Mapped[int] = mapped_column(Integer, ForeignKey("proteins.id"), nullable=False)
     epoch_number: Mapped[int] = mapped_column(Integer, nullable=False)
-
-    target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[target_protein_id])
-    anti_target_protein: Mapped["Protein"] = relationship("Protein", foreign_keys=[anti_target_protein_id])
+    target_proteins: Mapped[List["Protein"]] = relationship(
+        "Protein", 
+        secondary=competition_target_association, 
+        backref="target_competitions"
+    )
+    anti_target_proteins: Mapped[List["Protein"]] = relationship(
+        "Protein", 
+        secondary=competition_anti_target_association, 
+        backref="anti_target_competitions"
+    )
     submissions: Mapped[List["Submission"]] = relationship(back_populates="competition")
     best_submission: Mapped["Submission"] = relationship(
         "Submission",
