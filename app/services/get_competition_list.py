@@ -18,8 +18,8 @@ def get_competition_list(db: Session):
         {
             "id": competition.id, 
             "epoch_number": competition.epoch_number, 
-            "target_proteins": [protein.protein for protein in competition.target_proteins],  
-            "anti_target_proteins": [protein.protein for protein in competition.anti_target_proteins],  
+            "target_proteins": [protein.name for protein in competition.target_proteins],  
+            "anti_target_proteins": [protein.name for protein in competition.anti_target_proteins],  
             "best_submission":  {
                 "hotkey": competition.best_submission.neuron.hotkey,
                 "uid": METAGRAPH.get_uid(competition.best_submission.neuron.hotkey) if competition.best_submission.neuron.hotkey else None,

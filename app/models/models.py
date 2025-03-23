@@ -18,7 +18,7 @@ class Protein(Base):
     __tablename__ = "proteins"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    protein: Mapped[str] = mapped_column(String, index=True)
+    name: Mapped[str] = mapped_column(String, index=True)
 
 
 # Association tables for many-to-many relationships

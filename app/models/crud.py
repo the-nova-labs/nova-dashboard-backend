@@ -22,12 +22,12 @@ def create_record(session: Session, model_class, **kwargs):
         return None
 
 
-def get_or_create_protein(db: Session, protein: str) -> Protein:
+def get_or_create_protein(db: Session, name: str) -> Protein:
     """Fetch an existing protein or create a new one if not found."""
-    protein = db.query(Protein).filter_by(protein=protein).first()
+    protein = db.query(Protein).filter_by(name=name).first()
     if not protein:
-        challenge = create_record(db, Protein, protein=protein)
-    return challenge
+        protein = create_record(db, Protein, name=name)
+    return protein
 
 
 def get_or_create_competition(

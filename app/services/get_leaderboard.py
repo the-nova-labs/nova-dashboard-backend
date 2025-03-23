@@ -75,8 +75,8 @@ def get_leaderboard(db: Session, epoch_number: int):
         "competition": {
             "id": competition.id,
             "epoch_number": competition.epoch_number,
-            "target_proteins": [protein.protein for protein in competition.target_proteins],
-            "anti_target_proteins": [protein.protein for protein in competition.anti_target_proteins],
+            "target_proteins": [protein.name for protein in competition.target_proteins],
+            "anti_target_proteins": [protein.name for protein in competition.anti_target_proteins],
         }
     }
 
